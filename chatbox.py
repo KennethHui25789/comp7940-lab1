@@ -29,7 +29,7 @@ def main():
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("add", add))
     dispatcher.add_handler(CommandHandler("help", help_command))
-
+    dispatcher.add_handler(CommandHandler("hello", hello_command))
 
     # To start the bot:
     updater.start_polling()
@@ -60,6 +60,18 @@ def add(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('You have said ' + msg +  ' for ' + redis1.get(msg).decode('UTF-8') + ' times.')
     except (IndexError, ValueError):
         update.message.reply_text('Usage: /add <keyword>')
+
+
+def hello_command(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /help is issued."""
+    try: 
+        global redis1
+        logging.info(context.args[0])
+        msg = context.args[0]   # /hello keyword <-- this should store the keyword
+        redis1.incr(msg)
+        update.message.reply_text('Good day, ' + msg +  ' !.')
+    except (IndexError, ValueError):
+        update.message.reply_text('Usage: /hello <keyword>')
 
 
 
